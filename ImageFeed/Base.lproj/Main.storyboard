@@ -19,7 +19,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <color key="backgroundColor" red="0.1019607843" green="0.1058823529" blue="0.1333333333" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationWidth="10" reuseIdentifier="ImagesListCell" rowHeight="180" id="6Sh-rZ-LRd" customClass="ImagesListCell" customModule="ImageFeed" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationWidth="10" reuseIdentifier="ImagesListCell" rowHeight="180" id="6Sh-rZ-LRd" customClass="ImagesListCell" customModule="ImageFeed">
                                         <rect key="frame" x="0.0" y="50" width="393" height="180"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="6Sh-rZ-LRd" id="hKG-BL-sHr">
@@ -66,6 +66,11 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <connections>
+                                            <outlet property="cellImage" destination="73K-Zl-Hjz" id="Paa-fm-eZL"/>
+                                            <outlet property="dateLabel" destination="mmx-bZ-NCl" id="FMc-et-D0r"/>
+                                            <outlet property="likeButton" destination="Wr6-6e-2hs" id="ggU-7D-EwU"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
