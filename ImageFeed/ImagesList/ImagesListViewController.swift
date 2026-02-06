@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController {
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -16,12 +16,11 @@ class ImagesListViewController: UIViewController {
         return formatter
     }()
     
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak private var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.rowHeight = 200
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
 }
@@ -70,10 +69,8 @@ extension ImagesListViewController {
         cell.cellImage.image = image
         
         let isEven = indexPath.row.isMultiple(of: 2)
-        let iconName = isEven ? "like_button_on" : "like_button_off"
-        guard let imageIcon = UIImage(named: String(iconName)) else {
-            return
-        }
+        let imageResource: ImageResource = isEven ? .likeButtonOn : .likeButtonOff
+        let imageIcon: UIImage = UIImage(resource: imageResource)
         cell.likeButton.setImage(imageIcon, for: .normal)
     }
 }
