@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="qO4-nF-WFj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="cSs-dz-GWj">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
@@ -114,6 +114,7 @@
                     <navigationItem key="navigationItem" id="2sJ-u5-qhz"/>
                     <connections>
                         <outlet property="tableView" destination="uXJ-am-Lfc" id="1xf-Li-KTV"/>
+                        <segue destination="qO4-nF-WFj" kind="show" identifier="ShowSingleImage" id="RVt-nH-YsY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -237,7 +238,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="X7o-qS-N87">
-                                <rect key="frame" x="0.0" y="118" width="393" height="666"/>
+                                <rect key="frame" x="0.0" y="172" width="393" height="563"/>
                                 <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                             </imageView>
                         </subviews>
@@ -250,6 +251,7 @@
                             <constraint firstItem="X7o-qS-N87" firstAttribute="top" secondItem="xDC-dN-SL1" secondAttribute="top" id="kKF-Rg-hrE"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="T0H-m3-qjx"/>
                     <connections>
                         <outlet property="imageView" destination="X7o-qS-N87" id="OGf-78-L9a"/>
                     </connections>
