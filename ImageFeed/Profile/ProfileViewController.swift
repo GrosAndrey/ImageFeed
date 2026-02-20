@@ -8,6 +8,22 @@
 import UIKit
 
 final class ProfileViewController: UIViewController {
+    private enum TextLabel {
+        case nameLabel
+        case loginNameLabel
+        case descriptionLabel
+        
+        var text: String {
+            switch self {
+            case .nameLabel:
+                return "Екатерина Новикова"
+            case .loginNameLabel:
+                return "@ekaterina_nov"
+            case .descriptionLabel:
+                return "Hello, World!"
+            }
+        }
+    }
     private let avatarImageView = UIImageView()
     private let nameLabel = UILabel()
     private let loginNameLabel = UILabel()
@@ -33,7 +49,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureView() {
-        view.backgroundColor = UIColor(named: "YP_black")
+        view.backgroundColor = DSColor.ypBlack
     }
     
     private func configureImageView() {
@@ -47,7 +63,7 @@ final class ProfileViewController: UIViewController {
     private func configureNameLabel() {
         let fontSemibold = UIFont.systemFont(ofSize: 23, weight: .semibold)
         
-        nameLabel.text = "Екатерина Новикова"
+        nameLabel.text = TextLabel.nameLabel.text
         nameLabel.font = fontSemibold
         nameLabel.textColor = UIColor.white
         
@@ -55,15 +71,15 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureLoginLabel() {
-        loginNameLabel.text = "@ekaterina_nov"
+        loginNameLabel.text = TextLabel.loginNameLabel.text
         loginNameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        loginNameLabel.textColor = UIColor(named: "YP_gray")
+        loginNameLabel.textColor = DSColor.ypGray
         
         loginNameLabel.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func configureDescriptionLabel() {
-        descriptionLabel.text = "Hello, World!"
+        descriptionLabel.text = TextLabel.descriptionLabel.text
         descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         descriptionLabel.textColor = UIColor.white
         
@@ -111,5 +127,7 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc
-    private func didTapLogoutButton() { }
+    private func didTapLogoutButton() {
+        // TODO:
+    }
 }
