@@ -14,6 +14,7 @@ enum WebViewConstants {
 
 final class WebViewViewController: UIViewController {
     @IBOutlet weak private var webView: WKWebView!
+    @IBOutlet weak private var UIProgressView: UIProgressView!
     
     weak var delegate: WebViewViewControllerDelegate?
     
