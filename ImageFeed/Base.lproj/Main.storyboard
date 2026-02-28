@@ -297,8 +297,8 @@
                                     <wkPreferences key="preferences"/>
                                 </wkWebViewConfiguration>
                             </wkWebView>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="PTu-kX-9G0">
-                                <rect key="frame" x="0.0" y="172" width="393" height="2.6666666666666572"/>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="PTu-kX-9G0">
+                                <rect key="frame" x="0.0" y="172" width="393" height="4"/>
                                 <color key="progressTintColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="calibratedRGB"/>
                             </progressView>
                         </subviews>
@@ -316,7 +316,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="U26-N4-aNG"/>
                     <connections>
-                        <outlet property="UIProgressView" destination="PTu-kX-9G0" id="ikp-hI-ork"/>
+                        <outlet property="progressView" destination="PTu-kX-9G0" id="Aht-pX-Tae"/>
                         <outlet property="webView" destination="W2a-20-T66" id="zEx-Qk-ltV"/>
                     </connections>
                 </viewController>
