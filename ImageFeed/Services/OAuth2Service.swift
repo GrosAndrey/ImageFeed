@@ -8,14 +8,17 @@
 import Foundation
 
 final class OAuth2Service {
+    static let shared = OAuth2Service()
+    
     private let session: URLSession
     private let decoder = JSONDecoder()
+    private let storage = OAuth2TokenStorage()
     
     init(session: URLSession = .shared) {
         self.session = session
     }
     
-    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let request = makeOAuthTokenRequest(code: code) else {
             print("❌ Invalid request: \(NetworkError.invalidRequest)")
             completion(.failure(NetworkError.invalidRequest))
@@ -32,7 +35,7 @@ final class OAuth2Service {
                         from: data
                     )
                     let token = tokenResponse.accessToken
-                    
+                    self.storage.token = token
                     completion(.success(token))
                     
                 } catch {

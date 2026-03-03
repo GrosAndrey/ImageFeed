@@ -46,10 +46,6 @@ final class WebViewViewController: UIViewController {
             self,
             forKeyPath: #keyPath(WKWebView.estimatedProgress)
         )
-        
-        if isMovingFromParent {
-            delegate?.webViewViewControllerDidCancel(self)
-        }
     }
     
     override func observeValue(
