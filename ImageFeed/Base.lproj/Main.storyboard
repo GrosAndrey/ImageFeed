@@ -334,14 +334,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash_screen_logo" translatesAutoresizingMaskIntoConstraints="NO" id="948-Fv-Brw">
-                                <rect key="frame" x="160" y="388.66666666666669" width="73" height="75"/>
+                                <rect key="frame" x="160" y="413.66666666666663" width="72.666666666666657" height="75.333333333333329"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="RaI-yE-HEF"/>
                         <color key="backgroundColor" name="YP_black"/>
                         <constraints>
-                            <constraint firstItem="948-Fv-Brw" firstAttribute="centerX" secondItem="l4e-fb-vNN" secondAttribute="centerX" id="BVe-xv-8bx"/>
-                            <constraint firstItem="948-Fv-Brw" firstAttribute="centerY" secondItem="l4e-fb-vNN" secondAttribute="centerY" id="Pk0-c5-stt"/>
+                            <constraint firstItem="948-Fv-Brw" firstAttribute="centerX" secondItem="RaI-yE-HEF" secondAttribute="centerX" id="BVe-xv-8bx"/>
+                            <constraint firstItem="948-Fv-Brw" firstAttribute="centerY" secondItem="RaI-yE-HEF" secondAttribute="centerY" id="Pk0-c5-stt"/>
                         </constraints>
                     </view>
                     <connections>

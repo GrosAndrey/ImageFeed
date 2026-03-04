@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol AuthViewControllerDelegate: AnyObject {
-    func didAuthenticate(_ vc: AuthViewController)
-}
-
 final class AuthViewController: UIViewController {
     private let showWebViewSegueIdentifier = "ShowWebView"
     private let oauth2Service = OAuth2Service.shared
@@ -47,14 +43,16 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        vc.dismiss(animated: true)
+        //vc.dismiss(animated: true)
         
         fetchOAuthToken(code) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success:
-                self.delegate?.didAuthenticate(self)
+                vc.dismiss(animated: true) {
+                    self.delegate?.didAuthenticate(self)
+                }
             case .failure:
                 // TODO [Sprint 11] Добавьте обработку ошибки
                 break
