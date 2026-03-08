@@ -14,7 +14,7 @@ final class OAuth2Service {
     
     private let session = URLSession.shared
     private let decoder = JSONDecoder()
-    private let storage = OAuth2TokenStorage()
+    private let storage = OAuth2TokenStorage.shared
     
     private var task: URLSessionTask?
     private var isLoading = false
@@ -80,7 +80,7 @@ final class OAuth2Service {
         }
         
         var request = URLRequest(url: authTokenUrl)
-        request.httpMethod = "POST"
+        request.httpMethod = HTTPMethod.post.rawValue
         return request
     }
 }
