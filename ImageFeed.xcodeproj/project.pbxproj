@@ -6,12 +6,17 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		D3D597D72F51CE9B0024107A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3D597D52F51CE780024107A /* WebKit.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		D3D597D52F51CE780024107A /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		D3DD70132F2D02B400949A4F /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		D3DD70252F2D02B600949A4F /* Exceptions for "ImageFeed" folder in "ImageFeed" target */ = {
+		D3D598222F51E78F0024107A /* Exceptions for "ImageFeed" folder in "ImageFeed" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -21,10 +26,10 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		D3DD70152F2D02B400949A4F /* ImageFeed */ = {
+		D3D598142F51E78F0024107A /* ImageFeed */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D3DD70252F2D02B600949A4F /* Exceptions for "ImageFeed" folder in "ImageFeed" target */,
+				D3D598222F51E78F0024107A /* Exceptions for "ImageFeed" folder in "ImageFeed" target */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";
@@ -36,16 +41,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D3D597D72F51CE9B0024107A /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D3D597D42F51CE770024107A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D3D597D52F51CE780024107A /* WebKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		D3DD700A2F2D02B400949A4F = {
 			isa = PBXGroup;
 			children = (
-				D3DD70152F2D02B400949A4F /* ImageFeed */,
+				D3D598142F51E78F0024107A /* ImageFeed */,
+				D3D597D42F51CE770024107A /* Frameworks */,
 				D3DD70142F2D02B400949A4F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -74,7 +89,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				D3DD70152F2D02B400949A4F /* ImageFeed */,
+				D3D598142F51E78F0024107A /* ImageFeed */,
 			);
 			name = ImageFeed;
 			packageProductDependencies = (

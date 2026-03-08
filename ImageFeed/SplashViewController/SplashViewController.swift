@@ -1,0 +1,71 @@
+//
+//  SplashViewController.swift
+//  ImageFeed
+//
+//  Created by Андрей Грошев on 03.03.2026.
+//
+
+import UIKit
+
+final class SplashViewController: UIViewController {
+    private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
+    
+    private let storage = OAuth2TokenStorage.shared
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if storage.token != nil {
+            switchToTabBarController()
+        } else {
+            // Show Auth Screen
+            performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNeedsStatusBarAppearanceUpdate()
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
+    }
+    
+    private func switchToTabBarController() {
+        guard
+            let windowScene = view.window?.windowScene,
+            let sceneDelegate = windowScene.delegate as? SceneDelegate
+        else {
+            assertionFailure("Invalid scene configuration")
+            return
+        }
+        
+        sceneDelegate.switchToTabBarController()
+    }
+}
+
+extension SplashViewController {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == showAuthenticationScreenSegueIdentifier {
+            guard
+                let navigationController = segue.destination as? UINavigationController,
+                let viewController = navigationController.viewControllers[0] as? AuthViewController
+            else {
+                assertionFailure("Failed to prepare for \(showAuthenticationScreenSegueIdentifier)")
+                return
+            }
+            viewController.delegate = self
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
+    }
+}
+
+extension SplashViewController: AuthViewControllerDelegate {
+    func didAuthenticate(_ vc: AuthViewController) {
+        vc.dismiss(animated: true)
+        
+        switchToTabBarController()
+    }
+}
