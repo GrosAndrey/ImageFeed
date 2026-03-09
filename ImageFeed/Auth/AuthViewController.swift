@@ -53,9 +53,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
             
             switch result {
             case .success:
-                vc.dismiss(animated: true) {
-                    self.delegate?.didAuthenticate(self)
-                }
+                self.delegate?.didAuthenticate(self)
             case .failure:
                 // TODO [Sprint 11] Добавьте обработку ошибки
                 break
