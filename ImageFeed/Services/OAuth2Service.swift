@@ -17,26 +17,26 @@ final class OAuth2Service {
     private let storage = OAuth2TokenStorage.shared
     
     private var task: URLSessionTask?
-    private var isLoading = false
+    private var lastCode: String?
     
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard !isLoading else { return }
-        isLoading = true
+        assert(Thread.isMainThread)
+        guard lastCode != code else {
+            completion(.failure(NetworkError.invalidRequest))
+            return
+        }
+
+        task?.cancel()
+        lastCode = code
         
         guard let request = makeOAuthTokenRequest(code: code) else {
-            isLoading = false
             print("❌ Invalid request: \(NetworkError.invalidRequest)")
             completion(.failure(NetworkError.invalidRequest))
             return
         }
         
         task = session.data(for: request) { [weak self] result in
-            guard let self = self else { return }
-            
-            defer {
-                self.isLoading = false
-                self.task = nil
-            }
+            guard let self else { return }
             
             switch result {
             case .success(let data):
@@ -47,6 +47,10 @@ final class OAuth2Service {
                     )
                     let token = tokenResponse.accessToken
                     self.storage.token = token
+                    
+                    self.lastCode = nil
+                    self.task = nil
+                    
                     completion(.success(token))
                     
                 } catch {
@@ -64,6 +68,7 @@ final class OAuth2Service {
     
     private func makeOAuthTokenRequest(code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token") else {
+            assertionFailure("Failed to create URL")
             return nil
         }
         
