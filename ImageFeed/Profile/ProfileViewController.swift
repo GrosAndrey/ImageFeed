@@ -24,6 +24,9 @@ final class ProfileViewController: UIViewController {
             }
         }
     }
+    private let storage = OAuth2TokenStorage.shared
+    private let profileService = ProfileService()
+    
     private let avatarImageView = UIImageView()
     private let nameLabel = UILabel()
     private let loginNameLabel = UILabel()
@@ -34,6 +37,7 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         configure()
+        fetchProfile()
     }
     
     private func configure() {
@@ -124,6 +128,27 @@ final class ProfileViewController: UIViewController {
         actionButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
         actionButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
         actionButton.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor).isActive = true
+    }
+    
+    private func fetchProfile() {
+        guard let token = storage.token else {
+            return
+        }
+        
+        profileService.fetchProfile(token) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success(let profile):
+                
+                self.nameLabel.text = profile.name
+                self.loginNameLabel.text = profile.loginName
+                self.descriptionLabel.text = profile.bio
+                
+            case .failure(let error):
+                print("❌ Failed to load profile:", error)
+            }
+        }
     }
     
     @objc
