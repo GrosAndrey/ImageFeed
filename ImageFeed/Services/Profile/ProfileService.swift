@@ -7,40 +7,31 @@
 
 import Foundation
 
+struct Profile {
+    let userName: String
+    let name: String
+    let bio: String
+    var loginName: String {
+        return "@\(userName)"
+    }
+}
+
 final class ProfileService {
     private let session = URLSession.shared
     private let decoder = JSONDecoder()
     private var task: URLSessionTask?
     
-    struct Profile {
-        let userName: String
-        let name: String
-        let bio: String
-        var loginName: String {
-            return "@\(userName)"
-        }
-    }
-    
-    private var isLoading = false
-    
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
-        guard !isLoading else { return }
-        isLoading = true
+        task?.cancel()
         
         guard let request = makeProfileRequest(authToken: token) else {
-            isLoading = false
             print("❌ Invalid request: \(NetworkError.invalidRequest)")
             completion(.failure(NetworkError.invalidRequest))
             return
         }
         
-        task = session.data(for: request) { [weak self] result in
+        let task = session.data(for: request) { [weak self] result in
             guard let self else { return }
-            
-            defer {
-                self.isLoading = false
-                self.task = nil
-            }
             
             switch result {
             case .success(let data):
@@ -65,8 +56,10 @@ final class ProfileService {
                 print("🌐 Network error while fetching OAuth token: \(error)")
                 completion(.failure(error))
             }
+            self.task = nil
         }
-        task?.resume()
+        self.task = task
+        task.resume()
     }
     
     private func makeProfileRequest(authToken: String) -> URLRequest? {
@@ -87,5 +80,4 @@ final class ProfileService {
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         return request
     }
-    
 }

@@ -8,22 +8,6 @@
 import UIKit
 
 final class ProfileViewController: UIViewController {
-    private enum TextLabel {
-        case nameLabel
-        case loginNameLabel
-        case descriptionLabel
-        
-        var text: String {
-            switch self {
-            case .nameLabel:
-                return "Екатерина Новикова"
-            case .loginNameLabel:
-                return "@ekaterina_nov"
-            case .descriptionLabel:
-                return "Hello, World!"
-            }
-        }
-    }
     private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService()
     
@@ -67,7 +51,7 @@ final class ProfileViewController: UIViewController {
     private func configureNameLabel() {
         let fontSemibold = UIFont.systemFont(ofSize: 23, weight: .semibold)
         
-        nameLabel.text = TextLabel.nameLabel.text
+        nameLabel.text = ""
         nameLabel.font = fontSemibold
         nameLabel.textColor = UIColor.white
         
@@ -75,7 +59,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureLoginLabel() {
-        loginNameLabel.text = TextLabel.loginNameLabel.text
+        loginNameLabel.text = ""
         loginNameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         loginNameLabel.textColor = DSColor.ypGray
         
@@ -83,7 +67,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureDescriptionLabel() {
-        descriptionLabel.text = TextLabel.descriptionLabel.text
+        descriptionLabel.text = ""
         descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         descriptionLabel.textColor = UIColor.white
         
@@ -132,6 +116,9 @@ final class ProfileViewController: UIViewController {
     
     private func fetchProfile() {
         guard let token = storage.token else {
+            print("❌ Failed to load profile, no token")
+            let profile = Profile(userName: "неизвестный_пользователь", name: "Имя не указано", bio: "Профиль не заполнен")
+            updateProfileDetails(with: profile)
             return
         }
         
@@ -140,15 +127,25 @@ final class ProfileViewController: UIViewController {
             
             switch result {
             case .success(let profile):
-                
-                self.nameLabel.text = profile.name
-                self.loginNameLabel.text = profile.loginName
-                self.descriptionLabel.text = profile.bio
-                
+                self.updateProfileDetails(with: profile)
             case .failure(let error):
                 print("❌ Failed to load profile:", error)
             }
         }
+    }
+    
+    private func updateProfileDetails(with profile: Profile) {
+        loginNameLabel.text = profile.loginName.isEmpty
+        ? "@неизвестный_пользователь"
+        : profile.loginName
+        
+        nameLabel.text = profile.name.isEmpty
+        ? "Имя не указано"
+        : profile.name
+        
+        descriptionLabel.text = profile.bio.isEmpty
+        ? "Профиль не заполнен"
+        : profile.bio
     }
     
     @objc

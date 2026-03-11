@@ -25,7 +25,7 @@ final class OAuth2Service {
             completion(.failure(NetworkError.invalidRequest))
             return
         }
-
+        
         task?.cancel()
         lastCode = code
         
@@ -35,7 +35,7 @@ final class OAuth2Service {
             return
         }
         
-        task = session.data(for: request) { [weak self] result in
+        let task = session.data(for: request) { [weak self] result in
             guard let self else { return }
             
             switch result {
@@ -62,8 +62,10 @@ final class OAuth2Service {
                 print("🌐 Network error while fetching OAuth token: \(error)")
                 completion(.failure(error))
             }
+            self.task = nil
         }
-        task?.resume()
+        self.task = task
+        task.resume()
     }
     
     private func makeOAuthTokenRequest(code: String) -> URLRequest? {
