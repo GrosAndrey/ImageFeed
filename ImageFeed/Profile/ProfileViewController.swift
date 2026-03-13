@@ -9,7 +9,7 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     private let storage = OAuth2TokenStorage.shared
-    private let profileService = ProfileService()
+    private let profileService = ProfileService.shared
     
     private let avatarImageView = UIImageView()
     private let nameLabel = UILabel()
@@ -21,7 +21,8 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         configure()
-        fetchProfile()
+        guard let profile = profileService.profile else { return }
+        updateProfileDetails(profile: profile)
     }
     
     private func configure() {
@@ -114,38 +115,18 @@ final class ProfileViewController: UIViewController {
         actionButton.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor).isActive = true
     }
     
-    private func fetchProfile() {
-        guard let token = storage.token else {
-            print("❌ Failed to load profile, no token")
-            let profile = Profile(userName: "неизвестный_пользователь", name: "Имя не указано", bio: "Профиль не заполнен")
-            updateProfileDetails(with: profile)
-            return
-        }
-        
-        profileService.fetchProfile(token) { [weak self] result in
-            guard let self else { return }
-            
-            switch result {
-            case .success(let profile):
-                self.updateProfileDetails(with: profile)
-            case .failure(let error):
-                print("❌ Failed to load profile:", error)
-            }
-        }
-    }
-    
-    private func updateProfileDetails(with profile: Profile) {
+    private func updateProfileDetails(profile: Profile) {
         loginNameLabel.text = profile.loginName.isEmpty
-        ? "@неизвестный_пользователь"
-        : profile.loginName
+            ? "@неизвестный_пользователь"
+            : profile.loginName
         
         nameLabel.text = profile.name.isEmpty
-        ? "Имя не указано"
-        : profile.name
+            ? "Имя не указано"
+            : profile.name
         
         descriptionLabel.text = profile.bio.isEmpty
-        ? "Профиль не заполнен"
-        : profile.bio
+            ? "Профиль не заполнен"
+            : profile.bio
     }
     
     @objc

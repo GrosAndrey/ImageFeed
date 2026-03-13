@@ -17,9 +17,13 @@ struct Profile {
 }
 
 final class ProfileService {
+    static let shared = ProfileService()
+    private init() {}
+    
     private let session = URLSession.shared
     private let decoder = JSONDecoder()
     private var task: URLSessionTask?
+    private(set) var profile: Profile?
     
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         task?.cancel()
@@ -45,6 +49,7 @@ final class ProfileService {
                                           name: profileResponse.name,
                                           bio: profileResponse.bio ?? "")
                     
+                    self.profile = profile
                     completion(.success(profile))
                     
                 } catch {
