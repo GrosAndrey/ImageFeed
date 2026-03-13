@@ -8,6 +8,8 @@
 import Foundation
 
 final class ProfileImageService {
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+    
     static let shared = ProfileImageService()
     private init() {}
     
@@ -46,6 +48,11 @@ final class ProfileImageService {
                     
                     self.avatarURL = avatarURL
                     completion(.success(avatarURL))
+                    
+                    NotificationCenter.default.post(
+                        name: ProfileImageService.didChangeNotification,
+                        object: self,
+                        userInfo: ["URL": avatarURL])
                     
                 } catch {
                     print("❌ Decoding error while parsing OAuthTokenResponseBody: \(error)")
