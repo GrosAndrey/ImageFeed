@@ -21,8 +21,9 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         configure()
-        guard let profile = profileService.profile else { return }
-        updateProfileDetails(profile: profile)
+        if let profile = profileService.profile {
+            updateProfileDetails(profile: profile)
+        }
     }
     
     private func configure() {

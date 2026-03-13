@@ -20,7 +20,12 @@ final class ProfileImageService {
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         task?.cancel()
         
-        guard let request = makeUserRequest(userName: username) else {
+        guard let token = OAuth2TokenStorage.shared.token else {
+            completion(.failure(NSError(domain: "ProfileImageService", code: 401, userInfo: [NSLocalizedDescriptionKey: "Authorization token missing"])))
+            return
+        }
+        
+        guard let request = makeUserRequest(userName: username, authToken: token) else {
             print("❌ Invalid request: \(NetworkError.invalidRequest)")
             completion(.failure(NetworkError.invalidRequest))
             return
@@ -57,7 +62,7 @@ final class ProfileImageService {
         task.resume()
     }
     
-    private func makeUserRequest(userName: String) -> URLRequest? {
+    private func makeUserRequest(userName: String, authToken: String) -> URLRequest? {
         var urlComponents = URLComponents(string: Constants.defaultBaseURLString)
         urlComponents?.path += "/users/:username"
         
@@ -67,10 +72,6 @@ final class ProfileImageService {
         }
         
         guard let profileUrl = urlComponents.url else {
-            return nil
-        }
-        
-        guard let authToken = OAuth2TokenStorage.shared.token else {
             return nil
         }
         
