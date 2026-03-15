@@ -47,7 +47,7 @@ final class ProfileService {
                 completion(.success(profile))
                 
             case .failure(let error):
-                print("🌐 Network error while fetching OAuth token: \(error)")
+                print("[fetchProfile]: Ошибка запроса: \(error.localizedDescription)")
                 completion(.failure(error))
             }
             

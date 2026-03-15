@@ -49,7 +49,7 @@ final class ProfileImageService {
                     userInfo: ["URL": avatarURL])
                 
             case .failure(let error):
-                print("🌐 Network error while fetching OAuth token: \(error)")
+                print("[fetchProfileImageURL]: Ошибка запроса: \(error.localizedDescription)")
                 completion(.failure(error))
             }
             
