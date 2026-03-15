@@ -33,38 +33,29 @@ final class ProfileImageService {
             return
         }
         
-        let task = session.data(for: request) { [weak self] result in
+        let task = session.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
             guard let self else { return }
             
             switch result {
-            case .success(let data):
-                do {
-                    let userResponse = try self.decoder.decode(
-                        UserResult.self,
-                        from: data
-                    )
-                    
-                    let avatarURL = userResponse.profileImage.small
-                    
-                    self.avatarURL = avatarURL
-                    completion(.success(avatarURL))
-                    
-                    NotificationCenter.default.post(
-                        name: ProfileImageService.didChangeNotification,
-                        object: self,
-                        userInfo: ["URL": avatarURL])
-                    
-                } catch {
-                    print("❌ Decoding error while parsing OAuthTokenResponseBody: \(error)")
-                    completion(.failure(NetworkError.decodingError(error)))
-                }
+            case .success(let userResponse):
+                let avatarURL = userResponse.profileImage.small
+                
+                self.avatarURL = avatarURL
+                completion(.success(avatarURL))
+                
+                NotificationCenter.default.post(
+                    name: ProfileImageService.didChangeNotification,
+                    object: self,
+                    userInfo: ["URL": avatarURL])
                 
             case .failure(let error):
                 print("🌐 Network error while fetching OAuth token: \(error)")
                 completion(.failure(error))
             }
+            
             self.task = nil
         }
+        
         self.task = task
         task.resume()
     }
@@ -87,5 +78,4 @@ final class ProfileImageService {
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         return request
     }
-    
 }

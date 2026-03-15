@@ -34,36 +34,26 @@ final class ProfileService {
             completion(.failure(NetworkError.invalidRequest))
             return
         }
-        
-        let task = session.data(for: request) { [weak self] result in
+        let task = session.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             guard let self else { return }
             
             switch result {
-            case .success(let data):
-                do {
-                    let profileResponse = try self.decoder.decode(
-                        ProfileResult.self,
-                        from: data
-                    )
-                    
-                    let profile = Profile(userName: profileResponse.userName,
-                                          name: profileResponse.name,
-                                          bio: profileResponse.bio ?? "")
-                    
-                    self.profile = profile
-                    completion(.success(profile))
-                    
-                } catch {
-                    print("❌ Decoding error while parsing OAuthTokenResponseBody: \(error)")
-                    completion(.failure(NetworkError.decodingError(error)))
-                }
+            case .success(let profileResponse):
+                let profile = Profile(userName: profileResponse.userName,
+                                      name: profileResponse.name,
+                                      bio: profileResponse.bio ?? "")
+                
+                self.profile = profile
+                completion(.success(profile))
                 
             case .failure(let error):
                 print("🌐 Network error while fetching OAuth token: \(error)")
                 completion(.failure(error))
             }
+            
             self.task = nil
         }
+        
         self.task = task
         task.resume()
     }
