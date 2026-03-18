@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D323ED5D2F5EFA0A001B4FD5 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = D323ED5C2F5EFA0A001B4FD5 /* ProgressHUD */; };
+		D3C44F192F6AD145004676BF /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = D3C44F182F6AD145004676BF /* Kingfisher */; };
 		D3D597D72F51CE9B0024107A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3D597D52F51CE780024107A /* WebKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D3C44F192F6AD145004676BF /* Kingfisher in Frameworks */,
 				D3D597D72F51CE9B0024107A /* WebKit.framework in Frameworks */,
 				D323ED5D2F5EFA0A001B4FD5 /* ProgressHUD in Frameworks */,
 			);
@@ -96,6 +98,7 @@
 			name = ImageFeed;
 			packageProductDependencies = (
 				D323ED5C2F5EFA0A001B4FD5 /* ProgressHUD */,
+				D3C44F182F6AD145004676BF /* Kingfisher */,
 			);
 			productName = ImageFeed;
 			productReference = D3DD70132F2D02B400949A4F /* ImageFeed.app */;
@@ -127,6 +130,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				D323ED5B2F5EFA0A001B4FD5 /* XCRemoteSwiftPackageReference "ProgressHUD" */,
+				D3C44F172F6AD145004676BF /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D3DD70142F2D02B400949A4F /* Products */;
@@ -382,6 +386,14 @@
 				minimumVersion = 15.0.1;
 			};
 		};
+		D3C44F172F6AD145004676BF /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.8.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -389,6 +401,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D323ED5B2F5EFA0A001B4FD5 /* XCRemoteSwiftPackageReference "ProgressHUD" */;
 			productName = ProgressHUD;
+		};
+		D3C44F182F6AD145004676BF /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D3C44F172F6AD145004676BF /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

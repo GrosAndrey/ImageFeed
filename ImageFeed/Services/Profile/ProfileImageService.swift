@@ -62,7 +62,7 @@ final class ProfileImageService {
     
     private func makeUserRequest(userName: String, authToken: String) -> URLRequest? {
         var urlComponents = URLComponents(string: Constants.defaultBaseURLString)
-        urlComponents?.path += "/users/:username"
+        urlComponents?.path += "/users/\(userName)"
         
         guard let urlComponents else {
             assertionFailure("Failed to create URL")
