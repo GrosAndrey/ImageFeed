@@ -10,6 +10,7 @@ import UIKit
 final class AuthViewController: UIViewController {
     private let showWebViewSegueIdentifier = "ShowWebView"
     private let oauth2Service = OAuth2Service.shared
+    private var alertPresenter = ResultAlertPresenter()
     
     weak var delegate: AuthViewControllerDelegate?
     
@@ -43,17 +44,20 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+        UIBlockingProgressHUD.show()
+        
         fetchOAuthToken(code) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
             guard let self else { return }
             
             switch result {
             case .success:
-                vc.dismiss(animated: true) {
-                    self.delegate?.didAuthenticate(self)
-                }
-            case .failure:
-                // TODO [Sprint 11] Добавьте обработку ошибки
-                break
+                self.delegate?.didAuthenticate(self)
+            case .failure(let error):
+                print("Ошибка при аутентификации: \(error.localizedDescription)")
+                self.showAuthErrorAlert()
+                
             }
         }
     }
@@ -68,5 +72,17 @@ extension AuthViewController {
         oauth2Service.fetchOAuthToken(code) { result in
             completion(result)
         }
+    }
+}
+
+extension AuthViewController {
+    func showAuthErrorAlert() {
+        let model = AlertModel(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            buttonText: "Оk",
+            completion: nil
+        )
+        alertPresenter.show(in: self, model: model)
     }
 }
