@@ -17,53 +17,54 @@ final class OAuth2Service {
     private let storage = OAuth2TokenStorage.shared
     
     private var task: URLSessionTask?
-    private var isLoading = false
+    private var lastCode: String?
     
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard !isLoading else { return }
-        isLoading = true
+        assert(Thread.isMainThread)
+        guard lastCode != code else {
+            completion(.failure(NetworkError.invalidRequest))
+            return
+        }
+        
+        task?.cancel()
+        lastCode = code
         
         guard let request = makeOAuthTokenRequest(code: code) else {
-            isLoading = false
             print("❌ Invalid request: \(NetworkError.invalidRequest)")
             completion(.failure(NetworkError.invalidRequest))
             return
         }
         
-        task = session.data(for: request) { [weak self] result in
-            guard let self = self else { return }
-            
-            defer {
-                self.isLoading = false
-                self.task = nil
-            }
+        let task = session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            guard let self else { return }
             
             switch result {
-            case .success(let data):
-                do {
-                    let tokenResponse = try self.decoder.decode(
-                        OAuthTokenResponseBody.self,
-                        from: data
-                    )
-                    let token = tokenResponse.accessToken
-                    self.storage.token = token
-                    completion(.success(token))
-                    
-                } catch {
-                    print("❌ Decoding error while parsing OAuthTokenResponseBody: \(error)")
-                    completion(.failure(NetworkError.decodingError(error)))
-                }
+            case .success(let tokenResponse):
+                let token = tokenResponse.accessToken
+                self.storage.token = token
+                completion(.success(token))
+                
+                self.task = nil
+                self.lastCode = nil
                 
             case .failure(let error):
-                print("🌐 Network error while fetching OAuth token: \(error)")
+                print("[fetchOAuthToken]: Ошибка запроса: \(error.localizedDescription)")
                 completion(.failure(error))
+                
+                self.task = nil
+                self.lastCode = nil
             }
+            
+            self.task = nil
         }
-        task?.resume()
+        
+        self.task = task
+        task.resume()
     }
     
     private func makeOAuthTokenRequest(code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token") else {
+            assertionFailure("Failed to create URL")
             return nil
         }
         
