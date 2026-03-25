@@ -7,17 +7,30 @@
 
 import Foundation
 
+// MARK: - ProfileImageService
+
 final class ProfileImageService {
+    
+    // MARK: - Constants
+    
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+    
+    // MARK: - Singleton
     
     static let shared = ProfileImageService()
     private init() {}
     
+    // MARK: - Public Properties
+    
     private(set) var avatarURL: String?
+    
+    // MARK: - Private Properties
     
     private let session = URLSession.shared
     private let decoder = JSONDecoder()
     private var task: URLSessionTask?
+    
+    // MARK: - Public Methods
     
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         task?.cancel()
@@ -59,6 +72,8 @@ final class ProfileImageService {
         self.task = task
         task.resume()
     }
+    
+    // MARK: - Private Methods
     
     private func makeUserRequest(userName: String, authToken: String) -> URLRequest? {
         var urlComponents = URLComponents(string: Constants.defaultBaseURLString)

@@ -7,15 +7,6 @@
 
 import Foundation
 
-struct Profile {
-    let userName: String
-    let name: String
-    let bio: String
-    var loginName: String {
-        return "@\(userName)"
-    }
-}
-
 final class ProfileService {
     static let shared = ProfileService()
     private init() {}
