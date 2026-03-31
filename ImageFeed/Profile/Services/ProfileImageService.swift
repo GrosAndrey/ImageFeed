@@ -27,7 +27,6 @@ final class ProfileImageService {
     // MARK: - Private Properties
     
     private let session = URLSession.shared
-    private let decoder = JSONDecoder()
     private var task: URLSessionTask?
     
     // MARK: - Public Methods
