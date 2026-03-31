@@ -45,11 +45,47 @@ extension URLSession {
 }
 
 extension URLSession {
+    private static let formatterWithMs: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [
+            .withInternetDateTime,
+            .withFractionalSeconds
+        ]
+        return formatter
+    }()
+    
+    private static let formatterWithoutMs: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [
+            .withInternetDateTime
+        ]
+        return formatter
+    }()
+    
     func objectTask<T: Decodable>(
         for request: URLRequest,
         completion: @escaping (Result<T, Error>) -> Void
     ) -> URLSessionTask {
         let decoder = JSONDecoder()
+        
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            
+            if let date = Self.formatterWithMs.date(from: dateString) {
+                return date
+            }
+            
+            if let date = Self.formatterWithoutMs.date(from: dateString) {
+                return date
+            }
+            
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Invalid date format: \(dateString)"
+            )
+        }
+        
         let task = data(for: request) { (result: Result<Data, Error>) in
             switch result {
             case .success(let data):

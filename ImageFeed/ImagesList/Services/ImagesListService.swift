@@ -101,11 +101,11 @@ final class ImagesListService {
             URLQueryItem(name: "page", value: String(page))
         ]
         
-        guard let profileUrl = urlComponents.url else {
+        guard let photosUrl = urlComponents.url else {
             return nil
         }
         
-        var request = URLRequest(url: profileUrl)
+        var request = URLRequest(url: photosUrl)
         request.httpMethod = HTTPMethod.get.rawValue
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         return request
