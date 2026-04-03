@@ -104,13 +104,22 @@ final class ImagesListService {
             guard let self else { return }
             
             switch result {
-            case .success(let photosResponse):
-                let isLike = photosResponse.isLiked
-                
+            case .success(let photoResponse):
                 if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
-                    self.photos[index].isLiked = true
+                    let photo = self.photos[index]
+                    
+                    let newPhoto = Photo(
+                        id: photoResponse.id,
+                        size: CGSize(width: photoResponse.width, height: photoResponse.height),
+                        createdAt: photoResponse.createdAt ?? Date(),
+                        welcomeDescription: photoResponse.welcomeDescription ?? "",
+                        thumbImageURL: photoResponse.urlsResult.thumbImageURL,
+                        largeImageURL: photoResponse.urlsResult.largeImageURL,
+                        isLiked: photoResponse.isLiked
+                    )
+                    self.photos = self.photos.withReplaced(itemAt: index, newValue: newPhoto)
                 }
-
+                
                 completion(.success(()))
                 
             case .failure(let error):
