@@ -6,19 +6,16 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
-    var image: UIImage? {
-        didSet {
-            guard isViewLoaded, let image else { return }
-            
-            imageView.image = image
-            imageView.frame.size = image.size
-            rescaleAndCenterImageInScrollView(image: image)
-        }
-    }
+    var imageURL: URL?
+    
     private let minimumZoomScale = 0.1
     private let maximumZoomScale = 1.25
+    
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private let placeholderImageView = UIImageView()
     
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet weak var scrollView: UIScrollView!
@@ -27,17 +24,72 @@ final class SingleImageViewController: UIViewController {
         super.viewDidLoad()
         
         setupScrollView()
+        setupIndicator()
+        setupPlaceholder()
+        loadImage()
     }
     
     private func setupScrollView() {
         scrollView.minimumZoomScale = minimumZoomScale
         scrollView.maximumZoomScale = maximumZoomScale
+        scrollView.delegate = self
+    }
+    
+    private func setupIndicator() {
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.color = .lightGray
         
-        guard let image else { return }
-        imageView.image = image
-        imageView.frame.size = image.size
+        view.addSubview(activityIndicator)
         
-        rescaleAndCenterImageInScrollView(image: image)
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    private func setupPlaceholder() {
+        placeholderImageView.translatesAutoresizingMaskIntoConstraints = false
+        placeholderImageView.contentMode = .scaleAspectFit
+        placeholderImageView.image = UIImage(resource: .stubLogo)
+        
+        view.addSubview(placeholderImageView)
+        
+        NSLayoutConstraint.activate([
+            placeholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholderImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            placeholderImageView.widthAnchor.constraint(equalToConstant: 100),
+            placeholderImageView.heightAnchor.constraint(equalToConstant: 100)
+        ])
+    }
+    
+    private func loadImage() {
+        guard let url = imageURL else { return }
+        
+        placeholderImageView.isHidden = false
+        activityIndicator.startAnimating()
+        
+        imageView.kf.setImage(
+            with: url,
+            options: [
+                .scaleFactor(UIScreen.main.scale)
+            ]) { [weak self] result in
+                guard let self else { return }
+                
+                placeholderImageView.isHidden = true
+                self.activityIndicator.stopAnimating()
+                
+                switch result {
+                case .success(let value):
+                    let image = value.image
+                    
+                    self.imageView.frame.size = image.size
+                    self.rescaleAndCenterImageInScrollView(image: image)
+                    
+                case .failure(let error):
+                    print("Ошибка загрузки изображения: \(error)")
+                }
+            }
     }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
@@ -69,7 +121,7 @@ final class SingleImageViewController: UIViewController {
     }
     
     @IBAction func didTapShareButton(_ sender: UIButton) {
-        guard let image else { return }
+        guard let image = imageView.image else { return }
         let share = UIActivityViewController(
             activityItems: [image],
             applicationActivities: nil

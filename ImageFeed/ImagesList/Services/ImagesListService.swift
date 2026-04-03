@@ -54,7 +54,7 @@ final class ImagesListService {
                 let newPhotos: [Photo] = photosResponse.map { photoResponse in
                     Photo(
                         id: photoResponse.id,
-                        size: CGSize.zero,
+                        size: CGSize(width: photoResponse.width, height: photoResponse.height),
                         createdAt: photoResponse.createdAt ?? Date(),
                         welcomeDescription: photoResponse.welcomeDescription ?? "",
                         thumbImageURL: photoResponse.urlsResult.thumbImageURL,

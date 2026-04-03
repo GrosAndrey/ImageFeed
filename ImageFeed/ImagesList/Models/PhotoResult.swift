@@ -9,13 +9,17 @@ import Foundation
 
 struct PhotoResult: Codable {
     let id: String
+    let width: CGFloat
+    let height: CGFloat
     let createdAt: Date?
     let welcomeDescription: String?
     let isLiked: Bool
     let urlsResult: UrlsResult
     
     private enum CodingKeys: String, CodingKey {
-        case id = "id"
+        case id
+        case width
+        case height
         case createdAt = "created_at"
         case welcomeDescription = "description"
         case isLiked = "liked_by_user"
