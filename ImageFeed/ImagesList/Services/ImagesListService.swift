@@ -86,6 +86,45 @@ final class ImagesListService {
         
     }
     
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void){
+        task?.cancel()
+        
+        guard let token = OAuth2TokenStorage.shared.token else {
+            completion(.failure(NSError(domain: "ImagesListService", code: 401, userInfo: [NSLocalizedDescriptionKey: "Authorization token missing"])))
+            return
+        }
+        
+        guard let request = makeLikeRequest(photoId: photoId, isLike: isLike, authToken: token) else {
+            print("❌ Invalid request: \(NetworkError.invalidRequest)")
+            completion(.failure(NetworkError.invalidRequest))
+            return
+        }
+        
+        let task = session.objectTask(for: request) { [weak self] (result: Result<PhotoResult, Error>) in
+            guard let self else { return }
+            
+            switch result {
+            case .success(let photosResponse):
+                let isLike = photosResponse.isLiked
+                
+                if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                    self.photos[index].isLiked = true
+                }
+
+                completion(.success(()))
+                
+            case .failure(let error):
+                print("[fetchPhotosNextPage]: Ошибка запроса: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+            
+            self.task = nil
+        }
+        
+        self.task = task
+        task.resume()
+    }
+    
     // MARK: - Private Methods
     
     private func makePhotoRequest(page: Int, authToken: String) -> URLRequest? {
@@ -107,6 +146,25 @@ final class ImagesListService {
         
         var request = URLRequest(url: photosUrl)
         request.httpMethod = HTTPMethod.get.rawValue
+        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        return request
+    }
+    
+    private func makeLikeRequest(photoId: String, isLike: Bool, authToken: String) -> URLRequest? {
+        var urlComponents = URLComponents(string: Constants.defaultBaseURLString)
+        urlComponents?.path += "/photos/\(photoId)/like"
+        
+        guard var urlComponents else {
+            assertionFailure("Failed to create URL")
+            return nil
+        }
+        
+        guard let photosUrl = urlComponents.url else {
+            return nil
+        }
+        
+        var request = URLRequest(url: photosUrl)
+        request.httpMethod = isLike ? HTTPMethod.post.rawValue : HTTPMethod.delete.rawValue
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         return request
     }
