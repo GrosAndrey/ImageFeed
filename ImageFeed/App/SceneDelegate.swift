@@ -59,5 +59,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window?.rootViewController = tabBarController
     }
+    
+    func switchToSplashViewController() {
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        let splashViewController = storyboard.instantiateViewController(
+            withIdentifier: "SplashViewController"
+        )
+        
+        window?.rootViewController = splashViewController
+    }
 }
 

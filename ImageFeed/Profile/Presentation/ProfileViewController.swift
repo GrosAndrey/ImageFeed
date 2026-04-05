@@ -11,6 +11,7 @@ import Kingfisher
 final class ProfileViewController: UIViewController {
     private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
+    private let profileLogoutService = ProfileLogoutService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
     
     private let avatarImageView = UIImageView()
@@ -172,8 +173,21 @@ final class ProfileViewController: UIViewController {
             }
     }
     
+    private func switchToSplashViewController() {
+        guard
+            let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+            let sceneDelegate = windowScene.delegate as? SceneDelegate
+        else {
+            assertionFailure("Invalid scene configuration")
+            return
+        }
+        
+        sceneDelegate.switchToSplashViewController()
+    }
+    
     @objc
     private func didTapLogoutButton() {
-        // TODO:
+        profileLogoutService.logout()
+        switchToSplashViewController()
     }
 }

@@ -48,6 +48,10 @@ final class ProfileService {
         task.resume()
     }
     
+    func clearProfile() {
+        profile = nil
+    }
+    
     private func makeProfileRequest(authToken: String) -> URLRequest? {
         var urlComponents = URLComponents(string: Constants.defaultBaseURLString)
         urlComponents?.path += "/me"

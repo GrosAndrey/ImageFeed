@@ -133,6 +133,10 @@ final class ImagesListService {
         task.resume()
     }
     
+    func clearPhotos() {
+        photos.removeAll()
+    }
+    
     // MARK: - Private Methods
     
     private func makePhotoRequest(page: Int, authToken: String) -> URLRequest? {
