@@ -13,9 +13,7 @@ final class SingleImageViewController: UIViewController {
     
     private let minimumZoomScale = 0.1
     private let maximumZoomScale = 1.25
-    
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
-    private let placeholderImageView = UIImageView()
+    private let alertPresenter = ResultAlertPresenter()
     
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet weak var scrollView: UIScrollView!
@@ -24,8 +22,6 @@ final class SingleImageViewController: UIViewController {
         super.viewDidLoad()
         
         setupScrollView()
-        setupIndicator()
-        setupPlaceholder()
         loadImage()
     }
     
@@ -35,49 +31,18 @@ final class SingleImageViewController: UIViewController {
         scrollView.delegate = self
     }
     
-    private func setupIndicator() {
-        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.color = .lightGray
-        
-        view.addSubview(activityIndicator)
-        
-        NSLayoutConstraint.activate([
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-    }
-    
-    private func setupPlaceholder() {
-        placeholderImageView.translatesAutoresizingMaskIntoConstraints = false
-        placeholderImageView.contentMode = .scaleAspectFit
-        placeholderImageView.image = UIImage(resource: .stubLogo)
-        
-        view.addSubview(placeholderImageView)
-        
-        NSLayoutConstraint.activate([
-            placeholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            placeholderImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            placeholderImageView.widthAnchor.constraint(equalToConstant: 100),
-            placeholderImageView.heightAnchor.constraint(equalToConstant: 100)
-        ])
-    }
-    
     private func loadImage() {
         guard let url = imageURL else { return }
         
-        placeholderImageView.isHidden = false
-        activityIndicator.startAnimating()
+        UIBlockingProgressHUD.show()
         
         imageView.kf.setImage(
             with: url,
             options: [
                 .scaleFactor(UIScreen.main.scale)
             ]) { [weak self] result in
+                UIBlockingProgressHUD.dismiss()
                 guard let self else { return }
-                
-                placeholderImageView.isHidden = true
-                self.activityIndicator.stopAnimating()
                 
                 switch result {
                 case .success(let value):
@@ -86,8 +51,8 @@ final class SingleImageViewController: UIViewController {
                     self.imageView.frame.size = image.size
                     self.rescaleAndCenterImageInScrollView(image: image)
                     
-                case .failure(let error):
-                    print("Ошибка загрузки изображения: \(error)")
+                case .failure:
+                    self.showError()
                 }
             }
     }
@@ -116,6 +81,24 @@ final class SingleImageViewController: UIViewController {
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
     
+    private func showError() {
+        let model = AlertModel(
+            title: "Что-то пошло не так. ",
+            message: "Попробовать ещё раз?",
+            actions: [
+                AlertActionModel(
+                    title: "Не надо",
+                    style: .default,
+                    completion: nil),
+                AlertActionModel(
+                    title: "Повторить",
+                    style: .default,
+                    completion: { self.loadImage() })
+            ]
+        )
+        alertPresenter.show(in: self, model: model)
+    }
+    
     @IBAction func didTapBackButton() {
         dismiss(animated: true, completion: nil)
     }
@@ -128,7 +111,6 @@ final class SingleImageViewController: UIViewController {
         )
         present(share, animated: true, completion: nil)
     }
-    
 }
 
 extension SingleImageViewController: UIScrollViewDelegate {

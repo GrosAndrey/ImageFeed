@@ -36,3 +36,7 @@ struct UrlsResult: Codable {
         case largeImageURL = "full"
     }
 }
+
+struct LikeResponse: Codable {
+    let photo: PhotoResult
+}

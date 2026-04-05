@@ -100,14 +100,13 @@ final class ImagesListService {
             return
         }
         
-        let task = session.objectTask(for: request) { [weak self] (result: Result<PhotoResult, Error>) in
+        let task = session.objectTask(for: request) { [weak self] (result: Result<LikeResponse, Error>) in
             guard let self else { return }
             
             switch result {
-            case .success(let photoResponse):
+            case .success(let response):
+                let photoResponse = response.photo
                 if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
-                    let photo = self.photos[index]
-                    
                     let newPhoto = Photo(
                         id: photoResponse.id,
                         size: CGSize(width: photoResponse.width, height: photoResponse.height),
@@ -123,7 +122,7 @@ final class ImagesListService {
                 completion(.success(()))
                 
             case .failure(let error):
-                print("[fetchPhotosNextPage]: Ошибка запроса: \(error.localizedDescription)")
+                print("[changeLike]: Ошибка запроса: \(error.localizedDescription)")
                 completion(.failure(error))
             }
             
@@ -163,17 +162,17 @@ final class ImagesListService {
         var urlComponents = URLComponents(string: Constants.defaultBaseURLString)
         urlComponents?.path += "/photos/\(photoId)/like"
         
-        guard var urlComponents else {
+        guard let urlComponents else {
             assertionFailure("Failed to create URL")
             return nil
         }
         
-        guard let photosUrl = urlComponents.url else {
+        guard let photoUrl = urlComponents.url else {
             return nil
         }
         
-        var request = URLRequest(url: photosUrl)
-        request.httpMethod = isLike ? HTTPMethod.post.rawValue : HTTPMethod.delete.rawValue
+        var request = URLRequest(url: photoUrl)
+        request.httpMethod = isLike ? HTTPMethod.delete.rawValue : HTTPMethod.post.rawValue
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         return request
     }

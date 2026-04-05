@@ -14,6 +14,7 @@ final class ImagesListViewController: UIViewController {
     private var photos: [Photo] = []
     private let imagesListService = ImagesListService.shared
     private var ImagesListServiceObserver: NSObjectProtocol?
+    private var alertPresenter = ResultAlertPresenter()
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -98,6 +99,8 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
+        imageListCell.delegate = self
+        
         configCell(for: imageListCell, with: indexPath)
         return imageListCell
     }
@@ -148,9 +151,38 @@ extension ImagesListViewController {
             }
         
         cell.dateLabel.text = dateFormatter.string(from: photo.createdAt ?? Date())
-        let isEven = photo.isLiked
-        let imageResource: UIKit.ImageResource = isEven ? .likeButtonOn : .likeButtonOff
-        let imageIcon: UIImage = UIImage(resource: imageResource)
-        cell.likeButton.setImage(imageIcon, for: .normal)
+        cell.setIsLiked(isLiked: photo.isLiked)
+    }
+}
+
+extension ImagesListViewController: ImagesListCellDelegate {
+    func imageListCellDidTapLike(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let photo = photos[indexPath.row]
+        
+        UIBlockingProgressHUD.show()
+        imagesListService.changeLike(photoId: photo.id, isLike: photo.isLiked) { result in
+            switch result {
+            case .success:
+                self.photos = self.imagesListService.photos
+                cell.setIsLiked(isLiked: self.photos[indexPath.row].isLiked)
+                
+                UIBlockingProgressHUD.dismiss()
+            case .failure:
+                UIBlockingProgressHUD.dismiss()
+                
+                let model = AlertModel(
+                    title: "Что-то пошло не так",
+                    message: "Не удалось обновить лайк",
+                    actions: [
+                        AlertActionModel(
+                            title: "Оk",
+                            style: .default,
+                            completion: nil)
+                    ]
+                )
+                self.alertPresenter.show(in: self, model: model)
+            }
+        }
     }
 }
