@@ -13,6 +13,7 @@ final class SingleImageViewController: UIViewController {
     
     private let minimumZoomScale = 0.1
     private let maximumZoomScale = 1.25
+    private let placeholderImageView = UIImageView()
     private let alertPresenter = ResultAlertPresenter()
     
     @IBOutlet private var imageView: UIImageView!
@@ -22,6 +23,7 @@ final class SingleImageViewController: UIViewController {
         super.viewDidLoad()
         
         setupScrollView()
+        setupPlaceholder()
         loadImage()
     }
     
@@ -31,9 +33,25 @@ final class SingleImageViewController: UIViewController {
         scrollView.delegate = self
     }
     
+    private func setupPlaceholder() {
+        placeholderImageView.translatesAutoresizingMaskIntoConstraints = false
+        placeholderImageView.contentMode = .scaleAspectFit
+        placeholderImageView.image = UIImage(resource: .stubLogo)
+        
+        view.addSubview(placeholderImageView)
+        
+        NSLayoutConstraint.activate([
+            placeholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholderImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            placeholderImageView.widthAnchor.constraint(equalToConstant: 100),
+            placeholderImageView.heightAnchor.constraint(equalToConstant: 100)
+        ])
+    }
+    
     private func loadImage() {
         guard let url = imageURL else { return }
         
+        placeholderImageView.isHidden = false
         UIBlockingProgressHUD.show()
         
         imageView.kf.setImage(
@@ -43,6 +61,8 @@ final class SingleImageViewController: UIViewController {
             ]) { [weak self] result in
                 UIBlockingProgressHUD.dismiss()
                 guard let self else { return }
+                
+                self.placeholderImageView.isHidden = true
                 
                 switch result {
                 case .success(let value):

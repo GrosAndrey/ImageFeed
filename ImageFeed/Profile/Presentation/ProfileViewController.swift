@@ -12,6 +12,7 @@ final class ProfileViewController: UIViewController {
     private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
     private let profileLogoutService = ProfileLogoutService.shared
+    private let alertPresenter = ResultAlertPresenter()
     private var profileImageServiceObserver: NSObjectProtocol?
     
     private let avatarImageView = UIImageView()
@@ -187,7 +188,23 @@ final class ProfileViewController: UIViewController {
     
     @objc
     private func didTapLogoutButton() {
-        profileLogoutService.logout()
-        switchToSplashViewController()
+        let model = AlertModel(
+            title: "Пока, пока",
+            message: "Уверены, что хотите выйти?",
+            actions: [
+                AlertActionModel(
+                    title: "Да",
+                    style: .default,
+                    completion: {
+                        self.profileLogoutService.logout()
+                        self.switchToSplashViewController()
+                    }),
+                AlertActionModel(
+                    title: "Нет",
+                    style: .default,
+                    completion: nil)
+            ]
+        )
+        alertPresenter.show(in: self, model: model)
     }
 }
