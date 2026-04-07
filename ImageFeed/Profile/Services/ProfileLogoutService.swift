@@ -15,7 +15,7 @@ final class ProfileLogoutService {
     
     func logout() {
         cleanCookies()
-        cleanProgrammData()
+        cleanProgramData()
     }
     
     private func cleanCookies() {
@@ -30,7 +30,7 @@ final class ProfileLogoutService {
         }
     }
     
-    private func cleanProgrammData() {
+    private func cleanProgramData() {
         OAuth2TokenStorage.shared.token = nil
         ProfileService.shared.clearProfile()
         ProfileImageService.shared.clearProfileImage()
