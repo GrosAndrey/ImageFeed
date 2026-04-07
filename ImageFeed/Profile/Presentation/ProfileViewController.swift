@@ -175,15 +175,13 @@ final class ProfileViewController: UIViewController {
     }
     
     private func switchToSplashViewController() {
-        guard
-            let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-            let sceneDelegate = windowScene.delegate as? SceneDelegate
-        else {
-            assertionFailure("Invalid scene configuration")
+        let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+        guard let window = windowScene?.windows.first else {
+            assertionFailure("Invalid window configuration")
             return
         }
         
-        sceneDelegate.switchToSplashViewController()
+        window.rootViewController = SplashViewController()
     }
     
     @objc
@@ -195,7 +193,8 @@ final class ProfileViewController: UIViewController {
                 AlertActionModel(
                     title: "Да",
                     style: .default,
-                    completion: {
+                    completion: { [weak self] in
+                        guard let self else { return }
                         self.profileLogoutService.logout()
                         self.switchToSplashViewController()
                     }),

@@ -113,7 +113,10 @@ final class SingleImageViewController: UIViewController {
                 AlertActionModel(
                     title: "Повторить",
                     style: .default,
-                    completion: { self.loadImage() })
+                    completion: { [weak self] in
+                        guard let self else { return }
+                        self.loadImage()
+                    })
             ]
         )
         alertPresenter.show(in: self, model: model)
