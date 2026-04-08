@@ -111,7 +111,7 @@
                             <constraint firstItem="uXJ-am-Lfc" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="neO-Qq-jxm"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" image="tab_editorial_active" id="k4i-ha-0jG"/>
+                    <tabBarItem key="tabBarItem" title="" image="tab_editorial_active" id="k4i-ha-0jG"/>
                     <navigationItem key="navigationItem" id="2sJ-u5-qhz"/>
                     <connections>
                         <outlet property="tableView" destination="uXJ-am-Lfc" id="1xf-Li-KTV"/>
