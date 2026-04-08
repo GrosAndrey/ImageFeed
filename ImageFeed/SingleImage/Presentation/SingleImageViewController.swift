@@ -24,6 +24,10 @@ final class SingleImageViewController: UIViewController {
         
         setupScrollView()
         setupPlaceholder()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         loadImage()
     }
     

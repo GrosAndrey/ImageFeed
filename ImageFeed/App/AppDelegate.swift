@@ -5,7 +5,7 @@
 //  Created by Андрей Грошев on 30.01.2026.
 //
 
-import SwiftUI
+import UIKit
 import ProgressHUD
 
 @main
@@ -13,8 +13,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         ProgressHUD.animationType = .activityIndicator
-        ProgressHUD.colorHUD = Color.white
-        ProgressHUD.colorAnimation = Color.black
+        ProgressHUD.colorHUD = .white
+        ProgressHUD.colorAnimation = .black
+        ProgressHUD.mediaSize = 31
+        ProgressHUD.marginSize = 10
         
         return true
     }
