@@ -19,11 +19,16 @@ final class ResultAlertPresenter {
             message: model.message,
             preferredStyle: .alert)
         
-        let action = UIAlertAction(title: model.buttonText, style: .default) { _ in
-            model.completion?()
+        model.actions.forEach { actionModel in
+            let action = UIAlertAction(
+                title: actionModel.title,
+                style: actionModel.style
+            ) { _ in
+                actionModel.completion?()
+            }
+            
+            alert.addAction(action)
         }
-        
-        alert.addAction(action)
         vc.present(alert, animated: true, completion: nil)
     }
 }

@@ -14,7 +14,6 @@ final class ProfileService {
     private(set) var profile: Profile?
     
     private let session = URLSession.shared
-    private let decoder = JSONDecoder()
     private var task: URLSessionTask?
     
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
@@ -47,6 +46,10 @@ final class ProfileService {
         
         self.task = task
         task.resume()
+    }
+    
+    func clearProfile() {
+        profile = nil
     }
     
     private func makeProfileRequest(authToken: String) -> URLRequest? {

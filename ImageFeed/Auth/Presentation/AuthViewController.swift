@@ -77,11 +77,16 @@ extension AuthViewController {
 
 extension AuthViewController {
     func showAuthErrorAlert() {
+        
         let model = AlertModel(
             title: "Что-то пошло не так",
             message: "Не удалось войти в систему",
-            buttonText: "Оk",
-            completion: nil
+            actions: [
+                AlertActionModel(
+                    title: "Оk",
+                    style: .default,
+                    completion: nil)
+            ]
         )
         alertPresenter.show(in: self, model: model)
     }

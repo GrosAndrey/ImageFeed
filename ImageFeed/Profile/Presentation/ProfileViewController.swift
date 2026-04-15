@@ -11,6 +11,8 @@ import Kingfisher
 final class ProfileViewController: UIViewController {
     private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
+    private let profileLogoutService = ProfileLogoutService.shared
+    private let alertPresenter = ResultAlertPresenter()
     private var profileImageServiceObserver: NSObjectProtocol?
     
     private let avatarImageView = UIImageView()
@@ -172,8 +174,36 @@ final class ProfileViewController: UIViewController {
             }
     }
     
+    private func switchToSplashViewController() {
+        let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+        guard let window = windowScene?.windows.first else {
+            assertionFailure("Invalid window configuration")
+            return
+        }
+        
+        window.rootViewController = SplashViewController()
+    }
+    
     @objc
     private func didTapLogoutButton() {
-        // TODO:
+        let model = AlertModel(
+            title: "Пока, пока",
+            message: "Уверены, что хотите выйти?",
+            actions: [
+                AlertActionModel(
+                    title: "Да",
+                    style: .default,
+                    completion: { [weak self] in
+                        guard let self else { return }
+                        self.profileLogoutService.logout()
+                        self.switchToSplashViewController()
+                    }),
+                AlertActionModel(
+                    title: "Нет",
+                    style: .default,
+                    completion: nil)
+            ]
+        )
+        alertPresenter.show(in: self, model: model)
     }
 }
