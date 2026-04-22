@@ -8,12 +8,16 @@
 import UIKit
 import Kingfisher
 
-final class ImagesListViewController: UIViewController {
+protocol ImagesListViewProtocol: AnyObject {
+    func updateTableViewAnimated(oldCount: Int, newCount: Int)
+    func showError()
+    func updateLike(at indexPath: IndexPath)
+}
+
+final class ImagesListViewController: UIViewController, ImagesListViewProtocol {
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
+    private var presenter: ImagesListPresenterProtocol = ImagesListPresenter()
     
-    private var photos: [Photo] = []
-    private let imagesListService = ImagesListService.shared
-    private var ImagesListServiceObserver: NSObjectProtocol?
     private var alertPresenter = ResultAlertPresenter()
     
     private lazy var dateFormatter: DateFormatter = {
@@ -30,16 +34,8 @@ final class ImagesListViewController: UIViewController {
         
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         
-        ImagesListServiceObserver = NotificationCenter.default.addObserver(
-            forName: ImagesListService.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            guard let self else { return }
-            self.updateTableViewAnimated()
-        }
-        
-        fetchPhotosNextPage()
+        presenter.view = self
+        presenter.viewDidLoad()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -52,7 +48,7 @@ final class ImagesListViewController: UIViewController {
                 return
             }
             
-            let photo = photos[indexPath.row]
+            let photo = presenter.photos[indexPath.row]
             
             guard let url = URL(string: photo.largeImageURL) else { return }
             viewController.imageURL = url
@@ -62,22 +58,37 @@ final class ImagesListViewController: UIViewController {
         }
     }
     
-    private func updateTableViewAnimated() {
-        let oldCount = photos.count
-        let newCount = imagesListService.photos.count
-        photos = imagesListService.photos
+    func updateTableViewAnimated(oldCount: Int, newCount: Int) {
         if oldCount != newCount {
+            let indexPaths = (oldCount..<newCount).map {
+                IndexPath(row: $0, section: 0)
+            }
+            
             tableView.performBatchUpdates {
-                let indexPaths = (oldCount..<newCount).map { i in
-                    IndexPath(row: i, section: 0)
-                }
                 tableView.insertRows(at: indexPaths, with: .automatic)
-            } completion: { _ in }
+            }
         }
     }
     
-    private func fetchPhotosNextPage() {
-        imagesListService.fetchPhotosNextPage() { _ in }
+    func updateLike(at indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath) as? ImagesListCell {
+            let photo = presenter.photos[indexPath.row]
+            cell.setIsLiked(isLiked: photo.isLiked)
+        }
+    }
+    
+    func showError() {
+        let model = AlertModel(
+            title: "Что-то пошло не так",
+            message: "Не удалось обновить лайк",
+            actions: [
+                AlertActionModel(
+                    title: "Оk",
+                    style: .default,
+                    completion: nil)
+            ]
+        )
+        alertPresenter.show(in: self, model: model)
     }
 }
 
@@ -89,7 +100,7 @@ extension ImagesListViewController: UITableViewDelegate {
 
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photos.count
+        return presenter.photos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -106,7 +117,7 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let photo = photos[indexPath.row]
+        let photo = presenter.photos[indexPath.row]
         
         let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
         let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
@@ -117,17 +128,13 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let lastIndex = imagesListService.photos.count - 1
-        
-        if indexPath.row == lastIndex {
-            fetchPhotosNextPage()
-        }
+        presenter.willDisplayCell(at: indexPath)
     }
 }
 
 extension ImagesListViewController {
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        let photo = photos[indexPath.row]
+        let photo = presenter.photos[indexPath.row]
         
         guard let url = URL(string: photo.thumbImageURL) else { return }
         
@@ -156,33 +163,9 @@ extension ImagesListViewController {
 }
 
 extension ImagesListViewController: ImagesListCellDelegate {
+    
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        let photo = photos[indexPath.row]
-        
-        UIBlockingProgressHUD.show()
-        imagesListService.changeLike(photoId: photo.id, isLike: photo.isLiked) { result in
-            switch result {
-            case .success:
-                self.photos = self.imagesListService.photos
-                cell.setIsLiked(isLiked: self.photos[indexPath.row].isLiked)
-                
-                UIBlockingProgressHUD.dismiss()
-            case .failure:
-                UIBlockingProgressHUD.dismiss()
-                
-                let model = AlertModel(
-                    title: "Что-то пошло не так",
-                    message: "Не удалось обновить лайк",
-                    actions: [
-                        AlertActionModel(
-                            title: "Оk",
-                            style: .default,
-                            completion: nil)
-                    ]
-                )
-                self.alertPresenter.show(in: self, model: model)
-            }
-        }
+        presenter.didTapLike(at: indexPath)
     }
 }
