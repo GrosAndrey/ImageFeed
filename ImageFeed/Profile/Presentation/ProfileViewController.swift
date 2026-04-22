@@ -8,12 +8,17 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
-    private let storage = OAuth2TokenStorage.shared
-    private let profileService = ProfileService.shared
-    private let profileLogoutService = ProfileLogoutService.shared
+public protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol? { get set }
+    
+    func setupProfileDetails(name: String, login: String, bio: String)
+    func setupAvatar(url: URL)
+    func switchToSplashViewController()
+}
+
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+    var presenter: ProfileViewPresenterProtocol?
     private let alertPresenter = ResultAlertPresenter()
-    private var profileImageServiceObserver: NSObjectProtocol?
     
     private let avatarImageView = UIImageView()
     private let nameLabel = UILabel()
@@ -25,19 +30,9 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         configure()
-        if let profile = profileService.profile {
-            updateProfileDetails(profile: profile)
-        }
         
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            guard let self = self else { return }
-            self.updateAvatar()
-        }
-        updateAvatar()
+        self.presenter = ProfileViewPresenter(viewController: self)
+        presenter?.viewDidLoad()
     }
     
     private func configure() {
@@ -128,31 +123,25 @@ final class ProfileViewController: UIViewController {
         actionButton.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor).isActive = true
     }
     
-    private func updateProfileDetails(profile: Profile) {
-        loginNameLabel.text = profile.loginName.isEmpty
-        ? "@неизвестный_пользователь"
-        : profile.loginName
-        
-        nameLabel.text = profile.name.isEmpty
-        ? "Имя не указано"
-        : profile.name
-        
-        descriptionLabel.text = profile.bio.isEmpty
-        ? "Профиль не заполнен"
-        : profile.bio
+    func setupProfileDetails(name: String, login: String, bio: String) {
+        nameLabel.text = name
+        loginNameLabel.text = login
+        descriptionLabel.text = bio
     }
     
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else { return }
-        
+    func setupAvatar(url: URL) {
         let placeholderImage = UIImage(systemName: "person.circle.fill")?
             .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
-            .withConfiguration(UIImage.SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
+            .withConfiguration(
+                UIImage.SymbolConfiguration(
+                    pointSize: 70,
+                    weight: .regular,
+                    scale: .large
+                )
+            )
         
         let processor = RoundCornerImageProcessor(cornerRadius: 35)
+        
         avatarImageView.kf.indicatorType = .activity
         avatarImageView.kf.setImage(
             with: url,
@@ -162,20 +151,11 @@ final class ProfileViewController: UIViewController {
                 .scaleFactor(UIScreen.main.scale),
                 .cacheOriginalImage,
                 .forceRefresh
-            ]) { result in
-                switch result {
-                case .success(let value):
-                    print(value.image)
-                    print(value.cacheType)
-                    print(value.source)
-                    
-                case .failure(let error):
-                    print(error)
-                }
-            }
+            ]
+        )
     }
     
-    private func switchToSplashViewController() {
+    func switchToSplashViewController() {
         let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
         guard let window = windowScene?.windows.first else {
             assertionFailure("Invalid window configuration")
@@ -196,8 +176,7 @@ final class ProfileViewController: UIViewController {
                     style: .default,
                     completion: { [weak self] in
                         guard let self else { return }
-                        self.profileLogoutService.logout()
-                        self.switchToSplashViewController()
+                        presenter?.didTapLogout()
                     }),
                 AlertActionModel(
                     title: "Нет",
