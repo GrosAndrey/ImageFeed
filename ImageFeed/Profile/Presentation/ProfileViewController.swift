@@ -9,15 +9,16 @@ import UIKit
 import Kingfisher
 
 public protocol ProfileViewControllerProtocol: AnyObject {
-    var presenter: ProfileViewPresenterProtocol? { get set }
+    var presenter: ProfilePresenterProtocol? { get set }
     
     func setupProfileDetails(name: String, login: String, bio: String)
     func setupAvatar(url: URL)
+    func showAlert(_ alertModel: AlertModel)
     func switchToSplashViewController()
 }
 
 final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
-    var presenter: ProfileViewPresenterProtocol?
+    var presenter: ProfilePresenterProtocol?
     private let alertPresenter = ResultAlertPresenter()
     
     private let avatarImageView = UIImageView()
@@ -30,8 +31,6 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         super.viewDidLoad()
         
         configure()
-        
-        self.presenter = ProfileViewPresenter(viewController: self)
         presenter?.viewDidLoad()
     }
     
@@ -165,25 +164,12 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         window.rootViewController = SplashViewController()
     }
     
+    func showAlert(_ alertModel: AlertModel) {
+        alertPresenter.show(in: self, model: alertModel)
+    }
+    
     @objc
     private func didTapLogoutButton() {
-        let model = AlertModel(
-            title: "Пока, пока",
-            message: "Уверены, что хотите выйти?",
-            actions: [
-                AlertActionModel(
-                    title: "Да",
-                    style: .default,
-                    completion: { [weak self] in
-                        guard let self else { return }
-                        presenter?.didTapLogout()
-                    }),
-                AlertActionModel(
-                    title: "Нет",
-                    style: .default,
-                    completion: nil)
-            ]
-        )
-        alertPresenter.show(in: self, model: model)
+        presenter?.didTapLogout()
     }
 }

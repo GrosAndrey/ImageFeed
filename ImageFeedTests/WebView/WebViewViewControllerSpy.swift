@@ -5,8 +5,8 @@
 //  Created by Андрей Грошев on 21.04.2026.
 //
 
-import ImageFeed
 import Foundation
+import ImageFeed
 
 final class WebViewViewControllerSpy: WebViewViewControllerProtocol {
     var presenter: ImageFeed.WebViewPresenterProtocol?
