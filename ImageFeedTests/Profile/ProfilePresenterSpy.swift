@@ -9,7 +9,6 @@ import Foundation
 import ImageFeed
 
 final class ProfilePresenterSpy: ProfilePresenterProtocol {
-    
     var viewDidLoadCalled = false
     
     var view: ProfileViewControllerProtocol?
@@ -19,7 +18,10 @@ final class ProfilePresenterSpy: ProfilePresenterProtocol {
     }
     
     func updateProfileDetails() { }
+    
     func updateAvatar() { }
+    
     func observerProfileImageService() { }
+    
     func didTapLogout() { }
 }

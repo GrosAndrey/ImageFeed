@@ -20,9 +20,13 @@ public protocol ProfilePresenterProtocol {
 final class ProfilePresenter: ProfilePresenterProtocol {
     weak var view: ProfileViewControllerProtocol?
     
-    private let profileService = ProfileService.shared
+    private let profileService: ProfileServiceProtocol
     private let profileLogoutService = ProfileLogoutService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
+    
+    init(profileService: ProfileServiceProtocol = ProfileService.shared) {
+        self.profileService = profileService
+    }
     
     func viewDidLoad() {
         updateProfileDetails()

@@ -9,13 +9,11 @@ import Foundation
 import ImageFeed
 
 final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
-    
     var profileImageURL: URL?
     var showAlert = false
     var nameLabel = ""
     var loginNameLabel = ""
     var descriptionLabel = ""
-    
     
     var presenter: ProfilePresenterProtocol?
     
@@ -25,16 +23,11 @@ final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
         descriptionLabel = bio
     }
     
-    func setupAvatar(url: URL) {
-        
-    }
+    func setupAvatar(url: URL) { }
     
     func showAlert(_ alertModel: AlertModel) {
         showAlert = true
     }
     
-    func switchToSplashViewController() {
-        
-    }
-    
+    func switchToSplashViewController() { }
 }

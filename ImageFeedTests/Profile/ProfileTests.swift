@@ -45,8 +45,15 @@ final class ProfileTests: XCTestCase {
     func testPresenterPassesCorrectProfileDataToView() {
         // Given
         let viewController = ProfileViewControllerSpy()
-        let presenter = ProfilePresenter()
+        let service = ProfileServiceMock()
         
+        service.profile = Profile(
+            userName: "test",
+            name: "Andrey Groshev",
+            bio: "run"
+        )
+        
+        let presenter = ProfilePresenter(profileService: service)
         presenter.view = viewController
         
         // When
@@ -54,7 +61,7 @@ final class ProfileTests: XCTestCase {
         
         // Then
         XCTAssertEqual(viewController.nameLabel, "Andrey Groshev")
-        XCTAssertEqual(viewController.loginNameLabel, "@grosandrey")
+        XCTAssertEqual(viewController.loginNameLabel, "@test")
         XCTAssertEqual(viewController.descriptionLabel, "run")
     }
 }

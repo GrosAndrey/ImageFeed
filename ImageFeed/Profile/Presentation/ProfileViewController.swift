@@ -87,7 +87,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         actionButton.setImage(logoutImage, for: .normal)
         actionButton.translatesAutoresizingMaskIntoConstraints = false
         actionButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
-        actionButton.accessibilityIdentifier = "LogoutButton"
+        actionButton.accessibilityIdentifier = "logoutButton"
     }
     
     private func setupHierarchy() {
