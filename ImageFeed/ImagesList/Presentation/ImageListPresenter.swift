@@ -8,8 +8,8 @@
 import UIKit
 import Kingfisher
 
-protocol ImagesListPresenterProtocol {
-    var view: ImagesListViewProtocol? { get set }
+public protocol ImagesListPresenterProtocol {
+    var view: ImagesListViewControllerProtocol? { get set }
     var photos: [Photo] { get }
     
     func viewDidLoad()
@@ -18,7 +18,7 @@ protocol ImagesListPresenterProtocol {
 }
 
 final class ImagesListPresenter: ImagesListPresenterProtocol {
-    weak var view: ImagesListViewProtocol?
+    weak var view: ImagesListViewControllerProtocol?
     
     private let imagesListService = ImagesListService.shared
     private var observer: NSObjectProtocol?

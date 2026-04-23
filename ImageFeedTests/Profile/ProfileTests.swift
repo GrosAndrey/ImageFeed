@@ -42,20 +42,19 @@ final class ProfileTests: XCTestCase {
         XCTAssertTrue(viewController.showAlert)
     }
     
-    func testSetProfileDetailsPassesCorrectData() {
+    func testPresenterPassesCorrectProfileDataToView() {
         // Given
         let viewController = ProfileViewControllerSpy()
+        let presenter = ProfilePresenter()
         
-        let name = "Andrey Groshev"
-        let login = "@grosandrey"
-        let bio = "run"
+        presenter.view = viewController
         
         // When
-        viewController.setupProfileDetails(name: name, login: login, bio: bio)
+        presenter.updateProfileDetails()
         
         // Then
-        XCTAssertEqual(viewController.nameLabel, name)
-        XCTAssertEqual(viewController.loginNameLabel, login)
-        XCTAssertEqual(viewController.descriptionLabel, bio)
+        XCTAssertEqual(viewController.nameLabel, "Andrey Groshev")
+        XCTAssertEqual(viewController.loginNameLabel, "@grosandrey")
+        XCTAssertEqual(viewController.descriptionLabel, "run")
     }
 }

@@ -14,6 +14,10 @@ final class TabBarController: UITabBarController {
         
         let imagesListViewController = storyboard.instantiateViewController(
             withIdentifier: "ImagesListViewController"
+        ) as! ImagesListViewController
+        
+        let configuredImagesListVC = ImagesListModuleConfigurator.configure(
+            viewController: imagesListViewController
         )
         
         let profileViewController = ProfileModuleConfigurator.configure()
@@ -24,6 +28,6 @@ final class TabBarController: UITabBarController {
             selectedImage: nil
         )
         
-        self.viewControllers = [imagesListViewController, profileViewController]
+        self.viewControllers = [configuredImagesListVC, profileViewController]
     }
 }
