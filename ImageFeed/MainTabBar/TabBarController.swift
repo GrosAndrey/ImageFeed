@@ -12,9 +12,9 @@ final class TabBarController: UITabBarController {
         super.awakeFromNib()
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         
-        let imagesListViewController = storyboard.instantiateViewController(
+        guard let imagesListViewController = storyboard.instantiateViewController(
             withIdentifier: "ImagesListViewController"
-        ) as! ImagesListViewController
+        ) as? ImagesListViewController else { return }
         
         let configuredImagesListVC = ImagesListModuleConfigurator.configure(
             viewController: imagesListViewController
@@ -24,10 +24,10 @@ final class TabBarController: UITabBarController {
         
         profileViewController.tabBarItem = UITabBarItem(
             title: "",
-            image: UIImage(named: "tab_profile_active"),
+            image: UIImage(resource: .tabProfileActive),
             selectedImage: nil
         )
         
-        self.viewControllers = [configuredImagesListVC, profileViewController]
+        viewControllers = [configuredImagesListVC, profileViewController]
     }
 }

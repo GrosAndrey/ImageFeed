@@ -6,8 +6,9 @@
 //
 
 import XCTest
+import ImageFeed
 
-class Image_FeedUITests: XCTestCase {
+final class Image_FeedUITests: XCTestCase {
     private let app = XCUIApplication() // переменная приложения
     
     override func setUpWithError() throws {
@@ -17,10 +18,12 @@ class Image_FeedUITests: XCTestCase {
     }
     
     func testAuth() throws {
-        sleep(5)
-        app.buttons["Authenticate"].tap()
+        let authButton = app.buttons["Authenticate"]
+        let expectation = expectation(for: NSPredicate(format: "exists == true"), evaluatedWith: authButton, handler: nil)
         
-        let webView = app.webViews["UnsplashWebView"]
+        wait(for: [expectation], timeout: 5.0)
+        
+        let webView = app.webViews[AccessibilityIdentifier.UnsplashWebView]
         
         XCTAssertTrue(webView.waitForExistence(timeout: 10))
         
@@ -28,14 +31,14 @@ class Image_FeedUITests: XCTestCase {
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
         
         loginTextField.tap()
-        loginTextField.typeText("")
+        loginTextField.typeText("andrey_groshev@me.com")
         webView.swipeUp()
         
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         
         passwordTextField.tap()
-        passwordTextField.typeText("")
+        passwordTextField.typeText("unsGros1979")
         webView.swipeUp()
         
         webView.buttons["Login"].tap()

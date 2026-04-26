@@ -23,11 +23,11 @@ final class WebViewViewControllerSpy: WebViewViewControllerProtocol {
 }
 
 final class AuthHelperStub: AuthHelperProtocol {
-    func authRequest() -> URLRequest? {
+    func createAuthRequest() -> URLRequest? {
         URLRequest(url: URL(string: "https://example.com")!)
     }
     
-    func code(from url: URL) -> String? {
+    func getCode(from url: URL) -> String? {
         nil
     }
 }

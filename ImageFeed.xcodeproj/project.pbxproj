@@ -38,6 +38,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D371A5B92F9E44F800C56DEA /* Exceptions for "ImageFeed" folder in "ImageFeedUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				App/AuthConfiguration.swift,
+			);
+			target = D3D6CFC22F98B62400A3FC5E /* ImageFeedUITests */;
+		};
 		D3D598222F51E78F0024107A /* Exceptions for "ImageFeed" folder in "ImageFeed" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -52,6 +59,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				D3D598222F51E78F0024107A /* Exceptions for "ImageFeed" folder in "ImageFeed" target */,
+				D371A5B92F9E44F800C56DEA /* Exceptions for "ImageFeed" folder in "ImageFeedUITests" target */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";

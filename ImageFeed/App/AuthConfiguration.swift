@@ -7,6 +7,10 @@
 
 import Foundation
 
+public enum AccessibilityIdentifier {
+    public static let UnsplashWebView = "UnsplashWebView"
+}
+
 enum Constants {
     static let accessKey = "Od-yBWHuQ79YJkXFkmAWJTXHnj4RTnM_Uc51NSLR3k8"
     static let secretKey = "pF8gaD7bFtVcYach6rhAE0N9P_Gu4AaFnVE16MZjG_U"
@@ -25,12 +29,13 @@ struct AuthConfiguration {
     let authURLString: String
     
     static var standard: AuthConfiguration {
-        return AuthConfiguration(accessKey: Constants.accessKey,
-                                 secretKey: Constants.secretKey,
-                                 redirectURI: Constants.redirectURI,
-                                 accessScope: Constants.accessScope,
-                                 authURLString: Constants.unsplashAuthorizeURLString,
-                                 defaultBaseURLString: Constants.defaultBaseURLString)
+        return AuthConfiguration(
+            accessKey: Constants.accessKey,
+            secretKey: Constants.secretKey,
+            redirectURI: Constants.redirectURI,
+            accessScope: Constants.accessScope,
+            authURLString: Constants.unsplashAuthorizeURLString,
+            defaultBaseURLString: Constants.defaultBaseURLString)
     }
     
     init(accessKey: String, secretKey: String, redirectURI: String, accessScope: String, authURLString: String, defaultBaseURLString: String) {

@@ -64,9 +64,9 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         UIBlockingProgressHUD.show()
         
         imagesListService.changeLike(photoId: photo.id, isLike: photo.isLiked) { [weak self] result in
-            guard let self else { return }
-            
             UIBlockingProgressHUD.dismiss()
+            
+            guard let self else { return }
             
             switch result {
             case .success:

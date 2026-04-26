@@ -77,8 +77,8 @@ final class WebViewTests: XCTestCase {
         let authHelper = AuthHelper(configuration: configuration)
         
         //when
-        let url = authHelper.authURL()
-        guard let urlString = url?.absoluteString else {
+        let url = authHelper.createAuthRequest()
+        guard let urlString = url?.url?.absoluteString else {
             XCTFail("Авторизационная ссылка собрана неверно")
             return
         }
@@ -100,7 +100,7 @@ final class WebViewTests: XCTestCase {
         let authHelper = AuthHelper()
         
         //when
-        let code = authHelper.code(from: url)
+        let code = authHelper.getCode(from: url)
         
         //then
         XCTAssertEqual(code, "test code")
