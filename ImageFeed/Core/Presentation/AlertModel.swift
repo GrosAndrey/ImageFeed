@@ -13,7 +13,7 @@ struct AlertActionModel {
     let completion: (() -> Void)?
 }
 
-struct AlertModel {
+public struct AlertModel {
     let title: String
     let message: String
     
